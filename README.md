@@ -31,6 +31,14 @@ kubectl apply -f manifest/postgresql-pvc.yaml
 kubectl apply -f manifest/postgresql.yaml
 ```
 
+## 04. Deploy Voting App, Result App, and Worker
+
+```bash
+kubectl apply -f manifest/voting.yaml
+kubectl apply -f manifest/result.yaml
+kubectl apply -f manifest/worker.yaml
+```
+
 ### (Fixed) ERR01: PersistentVolume is not automatically provisioned
 
 #### Things to try
@@ -76,3 +84,9 @@ After removing `resources.limits`, the "Visual Studio Code Kubernetes Tools" ext
 - How to name an PR: https://se-education.org/guides/conventions/github.html
 - Git ignore examples: https://github.com/github/gitignore
 - Wait for first consumer: https://cloud.google.com/kubernetes-engine/docs/concepts/persistent-volumes#waitforfirstconsumer
+- Persistent Volume and Dynamic Provisioning: https://cloud.google.com/kubernetes-engine/docs/concepts/persistent-volumes
+- Docker example voting app: https://github.com/dockersamples/example-voting-app
+- Redis as an in memory data structure store: https://redis.io/docs/get-started/data-store/
+- How to deploy Postgres on Kubernetes as a Statefulset: https://kodekloud.com/blog/deploy-postgresql-kubernetes/
+- Configure a Pod to use PersistentVolume: https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/
+- KodeKloud | Kubernetes Crash Course: Learn the Basics and Build a Microservice Application: https://youtu.be/XuSQU5Grv1g?t=3927&si=Jr7wb-do_9zQan0y
