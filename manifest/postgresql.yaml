@@ -15,10 +15,6 @@ spec:
           # Must specify PGDATA, otherwise PostgreSQL will raise an "initdb error"
         - name: PGDATA
           value: /var/lib/postgresql/data/pgdata
-      resources:
-        limits:
-          memory: "1Gi"
-          cpu: "500m"
       ports:
         - containerPort: 5432
       volumeMounts:
