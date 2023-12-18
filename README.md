@@ -13,6 +13,7 @@ This guide contains step-by-step instructions on how to deploy a microservices t
 2. Deploy Redis to GKE
 3. Deploy PostgreSQL to GKE with Dynamic Volume Provisioning
 4. Deploy Voting App, Result App, and Worker
+5. Setup Ingress Nginx
 
 ## 01. Create a standard, single-zone GKE cluster with HttpLoadBalancing add-on disabled
 
@@ -29,6 +30,7 @@ kubectl apply -f manifest/redis.yaml
 ```bash
 kubectl apply -f manifest/postgresql-pvc.yaml
 kubectl apply -f manifest/postgresql.yaml
+# ERR01
 ```
 
 ## 04. Deploy Voting App, Result App, and Worker
@@ -38,6 +40,34 @@ kubectl apply -f manifest/voting.yaml
 kubectl apply -f manifest/result.yaml
 kubectl apply -f manifest/worker.yaml
 ```
+
+## 05. Setup Ingress Nginx
+
+### Install the Ingress Nginx Controller
+
+This will create a Load Balancer for the Ingress Nginx
+
+```bash
+helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace
+```
+
+Verify
+
+```bash
+k get svc ingress-nginx-controller -n ingress-nginx
+```
+
+### Deploy Ingress
+
+```bash
+k apply -f manifest/ingress.yaml
+```
+
+---
+
+## Error tracking
 
 ### (Fixed) ERR01: PersistentVolume is not automatically provisioned
 
@@ -90,3 +120,4 @@ After removing `resources.limits`, the "Visual Studio Code Kubernetes Tools" ext
 - How to deploy Postgres on Kubernetes as a Statefulset: https://kodekloud.com/blog/deploy-postgresql-kubernetes/
 - Configure a Pod to use PersistentVolume: https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/
 - KodeKloud | Kubernetes Crash Course: Learn the Basics and Build a Microservice Application: https://youtu.be/XuSQU5Grv1g?t=3927&si=Jr7wb-do_9zQan0y
+- Ingress Nginx quickstart: https://kubernetes.github.io/ingress-nginx/deploy/#quick-start
