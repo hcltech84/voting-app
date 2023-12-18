@@ -11,12 +11,7 @@ fi
 gcloud init
 
 # Declare envars
-export PROJECT_NAME="voting-app"
-export CLUSTER_NAME=$PROJECT_NAME
-export PROJECT_ID="voting-app-408302"
-export REGION="asia-southeast1"
-export ZONE="asia-southeast1-a"
-export BILLING_ACCOUNT_ID="019953-399CC3-B5B87A"
+source .env.local
 
 # Create a new Google Cloud project
 gcloud projects create $PROJECT_ID --name=$PROJECT_NAME
@@ -38,4 +33,8 @@ gcloud container clusters create $CLUSTER_NAME --addons="HorizontalPodAutoscalin
 #   For more detail about `--addons` flag, see https://cloud.google.com/sdk/gcloud/reference/container/clusters/create
 
 # Clean up
-gcloud projects delete $PROJECT_ID
+# To delete the entire project
+gcloud projects delete $PROJECT_ID --quiet
+
+# To delete the cluster only
+gcloud container clusters delete $CLUSTER_NAME --location=$ZONE --project $PROJECT_ID --quiet
