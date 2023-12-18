@@ -18,8 +18,16 @@ This guide contains step-by-step instructions on how to deploy a microservices t
 
 Refer to `01-create-cluster.sh` for commands to create GKE cluster. The script is for reference only, **not for execution**.
 
+## 02. Deploy redis to GKE
+
+```bash
+kubectl apply -f manifest/redis.yaml
+```
+
 ## References
 
+- How to create a single-zone cluster: https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-zonal-cluster
 - How to use GitHub issue: https://www.youtube.com/watch?v=tPfnOfjLUf8
 - Adding a task list to GitHub issue: https://docs.github.com/en/issues/tracking-your-work-with-issues/quickstart#adding-a-task-list
 - How to name an PR: https://se-education.org/guides/conventions/github.html
+- Git ignore examples: https://github.com/github/gitignore
