@@ -10,11 +10,15 @@ spec:
     - name: postgresql
       image: postgres
       env:
+        - name: POSTGRES_USER
+          value: postgres # Result app connects to PostgreSQL using this user
         - name: POSTGRES_PASSWORD
-          value: "secret"
-          # Must specify PGDATA, otherwise PostgreSQL will raise an "initdb error"
+          value: postgres
+          # Result app connects to PostgreSQL using this password.
+          # CAUTION: The password is stored in PVC. If you change the password here while re-using the existing PVC, the old password will be used.
         - name: PGDATA
           value: /var/lib/postgresql/data/pgdata
+          # Must specify PGDATA, otherwise PostgreSQL will raise an "initdb error"
       ports:
         - containerPort: 5432
       volumeMounts:
@@ -28,7 +32,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgresql
+  name: db # result app connect to PostgreSQL using the name `db`
 spec:
   selector:
     app: postgresql
