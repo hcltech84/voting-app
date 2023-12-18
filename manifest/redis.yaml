@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redis
+  labels:
+    app: redis
+    tier: database
+spec:
+  containers:
+    - name: redis
+      image: redis
+      resources:
+        limits:
+          memory: "1Gi"
+          cpu: "500m"
+      ports:
+        - containerPort: 6379
+      volumeMounts:
+        - name: redis-data
+          mountPath: /data
+  volumes:
+    - name: redis-data
+      emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+spec:
+  selector:
+    app: redis
+    tier: database
+  type: ClusterIP # When using Ingress Nginx, set Service type to ClusterIP
+  ports:
+    - port: 6379
+      targetPort: 6379
