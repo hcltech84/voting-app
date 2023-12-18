@@ -10,18 +10,62 @@ This guide contains step-by-step instructions on how to deploy a microservices t
 ## Procedures
 
 1. Create a standard, single-zone GKE cluster with HttpLoadBalancing add-on disabled
-2. Deploy redis to GKE
-3. Deploy postgres to GKE with auto-provision PersistentVolume
+2. Deploy Redis to GKE
+3. Deploy PostgreSQL to GKE with Dynamic Volume Provisioning
 4. Deploy Voting App, Result App, and Worker
 
 ## 01. Create a standard, single-zone GKE cluster with HttpLoadBalancing add-on disabled
 
 Refer to `01-create-cluster.sh` for commands to create GKE cluster. The script is for reference only, **not for execution**.
 
-## 02. Deploy redis to GKE
+## 02. Deploy Redis to GKE
 
 ```bash
 kubectl apply -f manifest/redis.yaml
+```
+
+## 03. Deploy PostgreSQL to GKE with Dynamic Volume Provisioning
+
+```bash
+kubectl apply -f manifest/postgresql-pvc.yaml
+kubectl apply -f manifest/postgresql.yaml
+```
+
+### (Fixed) ERR01: PersistentVolume is not automatically provisioned
+
+#### Things to try
+
+👉 Describe the Pod to see if it's created
+
+```bash
+kubectl describe po postgresql
+# ERR02
+# 0/3 nodes are available: 3 Insufficient cpu. preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod..
+```
+
+👉 Investigate nodes to see if they're overcommitted. There're two ways to do this:
+
+- (Recommended) Open Google Cloud Web UI - click on the cluster name - navigate to the "NODES" tab - Under the "Nodes" section, you can see how resources are allocated.
+- Or, using command-line: `kubectl describe nodes <node-name>`
+
+#### Reason
+
+The default Storage Class `standard-rwo` uses `volumeBindingMode: WaitForFirstConsumer`. This volume binding mode will delay the binding and provisioning of a `PersistentVolume` until a Pod using the `PersistentVolumeClaim` is created.
+
+### (Fixed) ERR02
+
+This is a strange issue. To fix it, remove the `resources.limits` in the K8s manifest.
+
+After removing `resources.limits`, the "Visual Studio Code Kubernetes Tools" extension will warn about missing "resource limits" configuration. To disable this warning, add the following to the extension setting, then restart VS Code.
+
+```json
+{
+  "vs-kubernetes": {
+    "disable-linters": [
+      "resource-limits"
+    ]
+  }
+}
 ```
 
 ## References
@@ -31,3 +75,4 @@ kubectl apply -f manifest/redis.yaml
 - Adding a task list to GitHub issue: https://docs.github.com/en/issues/tracking-your-work-with-issues/quickstart#adding-a-task-list
 - How to name an PR: https://se-education.org/guides/conventions/github.html
 - Git ignore examples: https://github.com/github/gitignore
+- Wait for first consumer: https://cloud.google.com/kubernetes-engine/docs/concepts/persistent-volumes#waitforfirstconsumer
